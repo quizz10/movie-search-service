@@ -23,6 +23,8 @@ public class MovieController {
     private final UserRepository userRepository;
     private final SequenceGeneratorService sequenceGeneratorService;
 
+    private final char TITLE_REGEX = '^';
+
     public MovieController(RatingRepository ratingRepository, NameRepository nameRepository, MovieRepository movieRepository, CastRepository castRepository, UserRepository userRepository, SequenceGeneratorService sequenceGeneratorService) {
         this.ratingRepository = ratingRepository;
         this.nameRepository = nameRepository;
@@ -54,7 +56,7 @@ public class MovieController {
     @QueryMapping
     public List<Movie> findByOriginalTitle(@Argument long userId, @Argument String originalTitle) {
         User user = userRepository.findByUserId(userId);
-        List<Movie> movies = movieRepository.findByOriginalTitleStartsWith("^" + originalTitle);
+        List<Movie> movies = movieRepository.findByOriginalTitleStartsWith(TITLE_REGEX + originalTitle);
         for (Movie movie : movies) {
             if (ratingRepository.findByTconst(movie.getTconst()) != null) {
                 movie.setAverageRating(ratingRepository.findByTconst(movie.getTconst()).getAverageRating());
@@ -74,17 +76,19 @@ public class MovieController {
     }
 
     private void storeGenreData(User user, List<Movie> movies) {
+        final String EMPTY_GENRE = "\\N";
+        final int ADD_ONE = 1;
         movies.stream()
                 .flatMap(movie -> movie.getGenres().stream())
-                .filter(g -> !g.startsWith("\\N"))
+                .filter(g -> !g.startsWith(EMPTY_GENRE))
                 .forEach(genre -> {
-                    user.getGenres().merge(genre, 1, Integer::sum);
+                    user.getGenres().merge(genre, ADD_ONE, Integer::sum);
                 });
         userRepository.save(user);
     }
 
     @QueryMapping
     public List<Movie> findByTitle(@Argument String title) {
-        return movieRepository.findByOriginalTitleStartsWith("^" + title);
+        return movieRepository.findByOriginalTitleStartsWith(TITLE_REGEX + title);
     }
 }
