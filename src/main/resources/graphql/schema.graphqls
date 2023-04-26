@@ -1,0 +1,51 @@
+type Query {
+    findByTitle(title: String): [Movie]
+    findByOriginalTitle(userId: Int, originalTitle: String): [Movie]
+    findRecommendedTitlesByGenres(userId: Int): [Movie]
+}
+
+type Mutation {
+    newUser: SearchUser
+}
+
+type Movie {
+    _id: ID!
+    primaryTitle: String
+    tconst: String
+    startYear: String
+    endYear: String
+    genres: [String]
+    originalTitle: String
+    averageRating: Float
+    casts: [Cast]
+    names: [Name]
+}
+
+type Cast {
+    _id: ID!
+    tconst: String
+    ordering: Int
+    nconst: String
+    category: String
+    job: String
+    characters: String
+}
+
+type Rating {
+    _id: ID!
+    averageRating: Float
+    tconst: String
+}
+
+type Name {
+    _id: ID!
+    primaryName: String
+    primaryProfession:[String]
+}
+
+type SearchUser {
+    id: ID!
+    userId: Int
+    genres: String!
+    searchWords: String!
+}
