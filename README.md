@@ -11,7 +11,7 @@ if you want to query through the web browser use localhost:8080/graphiql
 ```
 What you can query for: find a movie and info about that movie
 Create a simple user and see the ID like this:
-mutation {newUser {userID}}
+mutation {newUser {userId}}
 now that you have a user you can also query for a movie title and get genres stored which will be used for future recommendations:
 
 query{
