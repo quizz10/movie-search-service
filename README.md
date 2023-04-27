@@ -9,19 +9,24 @@ Accessed at: localhost:8080/graphql (POST)
 if you want to query through the web browser use localhost:8080/graphiql
 ```
 ```
-Example: 
-Get movie by title: 
+What you can query for: find a movie and info about that movie
+Create a simple user and see the ID like this:
+mutation {newUser {userID}}
+now that you have a user you can also query for a movie title and get genres stored which will be used for future recommendations:
+
 query{
-  findByTitle(originalTitle:"Mr. Bean") {
+  findByOriginalTitle(userId:17, originalTitle:"Se7en"){
     primaryTitle
-    startYear
-    averageRating
-    genres
-    names{
-      primaryName
-    }
   }
 }
+Now that your user has some genres stored you can find some recommendations!
+
+query{
+  findRecommendedTitlesByGenres(userId:17){
+    primaryTitle
+  }
+}
+
 see schema.graphqls in resources folder for all supported types, queries and mutations.
 
 ```
