@@ -5,7 +5,7 @@ type Query {
 }
 
 type Mutation {
-    newUser: SearchUser
+    newUser: User
 }
 
 type Movie {
@@ -43,7 +43,7 @@ type Name {
     primaryProfession:[String]
 }
 
-type SearchUser {
+type User {
     id: ID!
     userId: Int
     genres: String!

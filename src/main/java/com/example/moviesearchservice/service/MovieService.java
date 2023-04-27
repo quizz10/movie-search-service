@@ -8,8 +8,8 @@ import com.example.moviesearchservice.repository.*;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -55,11 +55,10 @@ public class MovieService {
 
     public List<Movie> findRecommendedTitlesByGenres(long userId) {
         User user = userRepository.findByUserId(userId);
-        List<Movie> recommendedMovies = new ArrayList<>();
+        List<Movie> recommendedMovies = user.getGenres().keySet().stream()
+                .flatMap(genre -> movieRepository.findTwoTitlesByGenre(genre).stream())
+                .collect(Collectors.toList());
 
-        for (String genre : user.getGenres().keySet()) {
-            recommendedMovies.addAll(movieRepository.findTwoTitlesByGenre(genre));
-        }
         return recommendedMovies;
     }
 
