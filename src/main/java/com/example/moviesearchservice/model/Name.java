@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.IndexDirection;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
@@ -19,5 +21,6 @@ public class Name {
     String primaryName;
     List<String> knownForTitles;
     List<String> primaryProfession;
+    @Indexed
     String nconst;
 }

@@ -17,7 +17,6 @@ public class MovieController {
 
     private final MovieService movieService;
 
-
     @QueryMapping
     public List<Movie> findRecommendedTitlesByGenres(@Argument long userId) {
 
