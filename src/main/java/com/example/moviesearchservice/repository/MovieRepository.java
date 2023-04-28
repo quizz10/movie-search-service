@@ -21,4 +21,13 @@ public interface MovieRepository extends MongoRepository<Movie, ObjectId> {
 
     })
     List<Movie> findTwoTitlesByGenre(String genre);
+
+    @Aggregation(pipeline = {
+            "{'$match':{'titleType':'movie'}}",
+            "{'$match':{'genres': ?0}}",
+            "{'$match':{'averageRating': {$gt: 6, $lt: 10}}}",
+            "{ $sample:{ size: ?1 } }"
+
+    })
+    List<Movie> findTitlesByGenre(String genre, int amountOfRecommendations);
 }

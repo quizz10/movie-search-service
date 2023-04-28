@@ -8,8 +8,8 @@ import com.example.moviesearchservice.repository.*;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.*;
+import java.util.Map.Entry;
 
 @Service
 @AllArgsConstructor
@@ -55,11 +55,43 @@ public class MovieService {
 
     public List<Movie> findRecommendedTitlesByGenres(long userId) {
         User user = userRepository.findByUserId(userId);
-        List<Movie> recommendedMovies = user.getGenres().keySet().stream()
-                .flatMap(genre -> movieRepository.findTwoTitlesByGenre(genre).stream())
-                .collect(Collectors.toList());
+
+        Set<Entry<String, Integer>> set = valueSort(user.getGenres()).entrySet();
+
+        Iterator<Entry<String, Integer>> i = set.iterator();
+        List<Movie> recommendedMovies = new ArrayList<>();
+        int amountOfRecommendations = 3;
+        int currentValue = -1;
+        while (i.hasNext() && amountOfRecommendations > 0) {
+            Entry<String, Integer> mp = i.next();
+            if (mp.getValue() != currentValue) {
+                if (currentValue != -1) {
+                    amountOfRecommendations--;
+                }
+                currentValue = mp.getValue();
+            }
+
+            recommendedMovies.addAll(movieRepository.findTitlesByGenre((mp.getKey()), amountOfRecommendations));
+
+        }
+        //List<Movie> recommendedMovies = sortedMap.keySet().stream()
+        //      .flatMap(genre -> movieRepository.findTwoTitlesByGenre(genre).stream())
+        //    .collect(Collectors.toList());
 
         return recommendedMovies;
+    }
+
+    public <K, V extends Comparable<V>> Map<K, V> valueSort(final Map<K, V> map) {
+        Comparator<K> valueComparator = (k1, k2) -> {
+            int comp = map.get(k2).compareTo(map.get(k1));
+            if (comp == 0)
+                return 1;
+            else
+                return comp;
+        };
+        Map<K, V> sortedMap = new TreeMap<>(valueComparator);
+        sortedMap.putAll(map);
+        return sortedMap;
     }
 
     private void storeGenreData(User user, List<Movie> movies) {
@@ -73,5 +105,6 @@ public class MovieService {
                 });
         userRepository.save(user);
     }
+
 
 }
