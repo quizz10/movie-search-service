@@ -29,23 +29,26 @@ public class MovieService {
         return userRepository.save(user);
     }
 
+    public Optional<User> findUserById(long userId) {
+
+        return Optional.ofNullable(userRepository.findUserByUserId(userId).orElseThrow(IllegalArgumentException::new));
+    }
+
     public List<Movie> findByOriginalTitle(long userId, String originalTitle) {
-        User user = userRepository.findByUserId(userId);
+        User user = findUserById(userId).get();
+
         List<Movie> movies = movieRepository.findByOriginalTitleStartsWith(TITLE_REGEX + originalTitle);
-        for (Movie movie : movies) {
-            if (ratingRepository.findByTconst(movie.getTconst()) != null) {
-                movie.setAverageRating(ratingRepository.findByTconst(movie.getTconst()).getAverageRating());
-                movie.setCasts(castRepository.findByTconst(movie.getTconst()));
-                for (Cast cast : movie.getCasts()) {
-                    Name name = nameRepository.findByNconst(cast.getNconst());
-                    if (name != null) {
-                        movie.getNames().add(name);
-                    }
-                }
-            }
-        }
+        List<Movie> compiledMovies = compileMovies(movies);
         storeGenreData(user, movies);
 
+        return compiledMovies;
+    }
+
+    public List<Movie> compileMovies(List<Movie> movies) {
+        for (Movie movie : movies) {
+                movie.setCasts(getCast(movie.getTconst()));
+                movie.getNames().addAll(getActors(movie.getCasts()));
+        }
         return movies;
     }
 
@@ -54,12 +57,11 @@ public class MovieService {
     }
 
     public List<Movie> findRecommendedTitlesByGenres(long userId) {
-        User user = userRepository.findByUserId(userId);
-
+        User user = findUserById(userId).get();
         Set<Entry<String, Integer>> set = valueSort(user.getGenres()).entrySet();
 
         Iterator<Entry<String, Integer>> i = set.iterator();
-        List<Movie> recommendedMovies = new ArrayList<>();
+        List<Movie> movies = new ArrayList<>();
         int amountOfRecommendations = 3;
         int currentValue = -1;
         while (i.hasNext() && amountOfRecommendations > 0) {
@@ -71,12 +73,10 @@ public class MovieService {
                 currentValue = mp.getValue();
             }
 
-            recommendedMovies.addAll(movieRepository.findTitlesByGenre((mp.getKey()), amountOfRecommendations));
+            movies.addAll(movieRepository.findTitlesByGenre((mp.getKey()), amountOfRecommendations));
 
         }
-        //List<Movie> recommendedMovies = sortedMap.keySet().stream()
-        //      .flatMap(genre -> movieRepository.findTwoTitlesByGenre(genre).stream())
-        //    .collect(Collectors.toList());
+        List<Movie> recommendedMovies = compileMovies(movies);
 
         return recommendedMovies;
     }
@@ -84,10 +84,8 @@ public class MovieService {
     public <K, V extends Comparable<V>> Map<K, V> valueSort(final Map<K, V> map) {
         Comparator<K> valueComparator = (k1, k2) -> {
             int comp = map.get(k2).compareTo(map.get(k1));
-            if (comp == 0)
-                return 1;
-            else
-                return comp;
+            if (comp == 0) return 1;
+            else return comp;
         };
         Map<K, V> sortedMap = new TreeMap<>(valueComparator);
         sortedMap.putAll(map);
@@ -97,14 +95,24 @@ public class MovieService {
     private void storeGenreData(User user, List<Movie> movies) {
         final String EMPTY_GENRE = "\\N";
         final int ADD_ONE = 1;
-        movies.stream()
-                .flatMap(movie -> movie.getGenres().stream())
-                .filter(g -> !g.startsWith(EMPTY_GENRE))
-                .forEach(genre -> {
-                    user.getGenres().merge(genre, ADD_ONE, Integer::sum);
-                });
+        movies.stream().flatMap(movie -> movie.getGenres().stream()).filter(g -> !g.startsWith(EMPTY_GENRE)).forEach(genre -> {
+            user.getGenres().merge(genre, ADD_ONE, Integer::sum);
+        });
         userRepository.save(user);
     }
 
 
+
+    public List<Cast> getCast(String tconst) {
+        return castRepository.findByTconst(tconst);
+    }
+
+    public List<Name> getActors(List<Cast> casts) {
+        List<Name> actors = new ArrayList<>();
+        for (Cast cast : casts) {
+            Name actor = nameRepository.findByNconst(cast.getNconst());
+            if (actor != null) actors.add(actor);
+        }
+        return actors;
+    }
 }
