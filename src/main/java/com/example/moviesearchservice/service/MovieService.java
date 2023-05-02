@@ -14,7 +14,6 @@ import java.util.Map.Entry;
 @Service
 @AllArgsConstructor
 public class MovieService {
-    private final RatingRepository ratingRepository;
     private final NameRepository nameRepository;
     private final MovieRepository movieRepository;
     private final CastRepository castRepository;
@@ -46,8 +45,8 @@ public class MovieService {
 
     public List<Movie> compileMovies(List<Movie> movies) {
         for (Movie movie : movies) {
-                movie.setCasts(getCast(movie.getTconst()));
-                movie.getNames().addAll(getActors(movie.getCasts()));
+            movie.setCasts(getCast(movie.getTconst()));
+            movie.getNames().addAll(getActors(movie.getCasts()));
         }
         return movies;
     }
@@ -76,9 +75,8 @@ public class MovieService {
             movies.addAll(movieRepository.findTitlesByGenre((mp.getKey()), amountOfRecommendations));
 
         }
-        List<Movie> recommendedMovies = compileMovies(movies);
 
-        return recommendedMovies;
+        return compileMovies(movies);
     }
 
     public <K, V extends Comparable<V>> Map<K, V> valueSort(final Map<K, V> map) {
@@ -100,7 +98,6 @@ public class MovieService {
         });
         userRepository.save(user);
     }
-
 
 
     public List<Cast> getCast(String tconst) {

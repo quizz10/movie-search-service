@@ -19,7 +19,6 @@ public class MovieController {
 
     @QueryMapping
     public List<Movie> findRecommendedTitlesByGenres(@Argument long userId) {
-
         return movieService.findRecommendedTitlesByGenres(userId);
     }
 
@@ -30,7 +29,6 @@ public class MovieController {
 
     @QueryMapping
     public List<Movie> findByOriginalTitle(@Argument long userId, @Argument String originalTitle) {
-
         return movieService.findByOriginalTitle(userId, originalTitle);
     }
 
