@@ -57,7 +57,7 @@ public class MovieService {
 
     public List<Movie> findRecommendedTitlesByGenres(long userId) {
         User user = findUserById(userId).get();
-        Set<Entry<String, Integer>> set = valueSort(user.getGenres()).entrySet();
+        Set<Entry<String, Integer>> set = sortByHighestValue(user.getGenres()).entrySet();
 
         Iterator<Entry<String, Integer>> i = set.iterator();
         List<Movie> movies = new ArrayList<>();
@@ -79,7 +79,7 @@ public class MovieService {
         return compileMovies(movies);
     }
 
-    public <K, V extends Comparable<V>> Map<K, V> valueSort(final Map<K, V> map) {
+    public <K, V extends Comparable<V>> Map<K, V> sortByHighestValue(final Map<K, V> map) {
         Comparator<K> valueComparator = (k1, k2) -> {
             int comp = map.get(k2).compareTo(map.get(k1));
             if (comp == 0) return 1;

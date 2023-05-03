@@ -1,0 +1,15 @@
+spring:
+  graphql:
+    cors:
+      allowed-origins: "*"
+    graphiql:
+      enabled: true
+
+    schema:
+      printer:
+        enabled: true
+  data:
+    mongodb:
+      database: moviedb
+      host: moviesearchcontainer
+      port: 27017

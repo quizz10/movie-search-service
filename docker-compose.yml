@@ -1,0 +1,16 @@
+version: "3"
+
+services:
+  moviesearchcontainer:
+    image: mongo:latest
+    container_name: moviesearchcontainer
+    ports:
+      - "27017:27017"
+
+  movie-api:
+    image: movie-api:1.0
+    container_name: movie-api
+    ports:
+      - "8080:8080"
+    links:
+      - moviesearchcontainer
