@@ -19,7 +19,7 @@ public class MovieController {
 
     @QueryMapping
     public List<Movie> findRecommendedTitlesByGenres(@Argument long userId) {
-        return movieService.findRecommendedTitlesByGenres(userId);
+        return movieService.findRecommendedTitlesByGenresAndUserId(userId);
     }
 
     @MutationMapping
@@ -29,7 +29,7 @@ public class MovieController {
 
     @QueryMapping
     public List<Movie> findByOriginalTitle(@Argument long userId, @Argument String originalTitle) {
-        return movieService.findByOriginalTitle(userId, originalTitle);
+        return movieService.findByOriginalTitleAndUserId(userId, originalTitle);
     }
 
 

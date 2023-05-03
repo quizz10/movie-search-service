@@ -1,7 +1,7 @@
 type Query {
     findByTitle(title: String): [Movie]
-    findByOriginalTitle(userId: Int, originalTitle: String): [Movie]
-    findRecommendedTitlesByGenres(userId: Int): [Movie]
+    findByOriginalTitleAndUserId(userId: Int, originalTitle: String): [Movie]
+    findRecommendedTitlesByGenresAndUserId(userId: Int): [Movie]
 }
 
 type Mutation {
@@ -29,12 +29,6 @@ type Cast {
     category: String
     job: String
     characters: String
-}
-
-type Rating {
-    _id: ID!
-    averageRating: Float
-    tconst: String
 }
 
 type Name {

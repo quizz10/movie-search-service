@@ -4,7 +4,10 @@ import com.example.moviesearchservice.model.Cast;
 import com.example.moviesearchservice.model.Movie;
 import com.example.moviesearchservice.model.Name;
 import com.example.moviesearchservice.model.User;
-import com.example.moviesearchservice.repository.*;
+import com.example.moviesearchservice.repository.CastRepository;
+import com.example.moviesearchservice.repository.MovieRepository;
+import com.example.moviesearchservice.repository.NameRepository;
+import com.example.moviesearchservice.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -33,7 +36,7 @@ public class MovieService {
         return Optional.ofNullable(userRepository.findUserByUserId(userId).orElseThrow(IllegalArgumentException::new));
     }
 
-    public List<Movie> findByOriginalTitle(long userId, String originalTitle) {
+    public List<Movie> findByOriginalTitleAndUserId(long userId, String originalTitle) {
         User user = findUserById(userId).get();
 
         List<Movie> movies = movieRepository.findByOriginalTitleStartsWith(TITLE_REGEX + originalTitle);
@@ -52,10 +55,12 @@ public class MovieService {
     }
 
     public List<Movie> findByTitle(String title) {
-        return movieRepository.findByOriginalTitleStartsWith(TITLE_REGEX + title);
+        List<Movie> movies = movieRepository.findByOriginalTitleStartsWith(TITLE_REGEX + title);
+
+        return compileMovies(movies);
     }
 
-    public List<Movie> findRecommendedTitlesByGenres(long userId) {
+    public List<Movie> findRecommendedTitlesByGenresAndUserId(long userId) {
         User user = findUserById(userId).get();
         Set<Entry<String, Integer>> set = sortByHighestValue(user.getGenres()).entrySet();
 
