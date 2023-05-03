@@ -53,3 +53,7 @@ Also note that you should keep the original names (for example moviecollection, 
 ```bash
 mongoimport --db moviedb --collection [COLLECTION NAME] --type csv --headerline --file [FILENAME].csv 
 ```
+Or you can take the full db [here](https://drive.google.com/file/d/1Gnd8w9NZI1nXLrJLlD_vfZHVn7kHfbKk/view?usp=sharing) and type this in your terminal
+```bash
+mongorestore --uri 'mongodb://localhost:27017/moviedb' --archive=[PATH TO FILE]
+```
