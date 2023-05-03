@@ -15,15 +15,27 @@ mutation {newUser {userId}}
 now that you have a user you can also query for a movie title and get genres stored which will be used for future recommendations:
 
 query{
-  findByOriginalTitle(userId:17, originalTitle:"Se7en"){
+  findByOriginalTitleAndUserId(userId:17, originalTitle:"Se7en"){
     primaryTitle
+    startYear
+    averageRating
+    genres
+    names{
+      primaryName
+    }
   }
 }
 Now that your user has some genres stored you can find some recommendations!
 
 query{
-  findRecommendedTitlesByGenres(userId:17){
+  findRecommendedTitlesByGenresAndUserId(userId:17){
     primaryTitle
+    startYear
+    averageRating
+    genres
+    names{
+      primaryName
+    }
   }
 }
 
@@ -37,7 +49,7 @@ you need to create a mongodb database called moviedb
 You need to download my imdb [datasets](https://drive.google.com/drive/u/1/folders/1TjCi1KuK36XYj7TjN4rTi59NuzYQ9pie)
 
 to create these collections copy paste this into your terminal(for each collection):
-
+Also note that you should keep the original names (for example moviecollection, namecollection)
 ```bash
 mongoimport --db moviedb --collection [COLLECTION NAME] --type csv --headerline --file [FILENAME].csv 
 ```
