@@ -21,6 +21,8 @@ public class MovieService {
     private final MovieRepository movieRepository;
     private final CastRepository castRepository;
     private final UserRepository userRepository;
+    private final GenreService genreService;
+    private final UserService userService;
     private final SequenceGeneratorService sequenceGeneratorService;
     private final char TITLE_REGEX = '^';
 
@@ -31,13 +33,8 @@ public class MovieService {
         return userRepository.save(user);
     }
 
-    public Optional<User> findUserById(long userId) {
-
-        return Optional.ofNullable(userRepository.findUserByUserId(userId).orElseThrow(IllegalArgumentException::new));
-    }
-
     public List<Movie> findByOriginalTitleAndUserId(long userId, String originalTitle) {
-        User user = findUserById(userId).get();
+        User user = userService.findUserById(userId).get();
 
         List<Movie> movies = movieRepository.findByOriginalTitleStartsWith(TITLE_REGEX + originalTitle);
         List<Movie> compiledMovies = compileMovies(movies);
@@ -60,11 +57,10 @@ public class MovieService {
         return compileMovies(movies);
     }
 
-    public List<Movie> findRecommendedTitlesByGenresAndUserId(long userId) {
-        User user = findUserById(userId).get();
-        Set<Entry<String, Integer>> set = sortByHighestValue(user.getGenres()).entrySet();
 
-        Iterator<Entry<String, Integer>> i = set.iterator();
+
+    public List<Movie> findRecommendedTitlesByGenresAndUserId(long userId) {
+        Iterator<Entry<String, Integer>> i = genreService.sortGenresByHighestValue(userId);
         List<Movie> movies = new ArrayList<>();
         int amountOfRecommendations = 3;
         int currentValue = -1;
@@ -82,17 +78,6 @@ public class MovieService {
         }
 
         return compileMovies(movies);
-    }
-
-    public <K, V extends Comparable<V>> Map<K, V> sortByHighestValue(final Map<K, V> map) {
-        Comparator<K> valueComparator = (k1, k2) -> {
-            int comp = map.get(k2).compareTo(map.get(k1));
-            if (comp == 0) return 1;
-            else return comp;
-        };
-        Map<K, V> sortedMap = new TreeMap<>(valueComparator);
-        sortedMap.putAll(map);
-        return sortedMap;
     }
 
     private void storeGenreData(User user, List<Movie> movies) {

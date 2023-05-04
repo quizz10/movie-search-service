@@ -18,7 +18,7 @@ public class MovieController {
     private final MovieService movieService;
 
     @QueryMapping
-    public List<Movie> findRecommendedTitlesByGenres(@Argument long userId) {
+    public List<Movie> findRecommendedTitlesByGenresAndUserId(@Argument long userId) {
         return movieService.findRecommendedTitlesByGenresAndUserId(userId);
     }
 
@@ -28,7 +28,7 @@ public class MovieController {
     }
 
     @QueryMapping
-    public List<Movie> findByOriginalTitle(@Argument long userId, @Argument String originalTitle) {
+    public List<Movie> findByOriginalTitleAndUserId(@Argument long userId, @Argument String originalTitle) {
         return movieService.findByOriginalTitleAndUserId(userId, originalTitle);
     }
 
