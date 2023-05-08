@@ -2,10 +2,23 @@ type Query {
     findByTitle(title: String): [Movie]
     findByOriginalTitleAndUserId(userId: Int, originalTitle: String): [Movie]
     findRecommendedTitlesByGenresAndUserId(userId: Int): [Movie]
+    findByOriginalTitleStartsWith(originalTitle: String): [AtlasMovie]
+    findByTconst(tconst: String): AtlasMovie
+    findByText(text: String): [AtlasMovie]
 }
 
 type Mutation {
     newUser: User
+}
+
+
+type AtlasMovie {
+    _id: ID!
+    originalTitle: String
+    startYear: String
+    tconst: String
+    genres: [String]
+    averageRating: Float
 }
 
 type Movie {

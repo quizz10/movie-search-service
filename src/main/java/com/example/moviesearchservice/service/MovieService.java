@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -83,9 +84,12 @@ public class MovieService {
     private void storeGenreData(User user, List<Movie> movies) {
         final String EMPTY_GENRE = "\\N";
         final int ADD_ONE = 1;
-        movies.stream().flatMap(movie -> movie.getGenres().stream()).filter(g -> !g.startsWith(EMPTY_GENRE)).forEach(genre -> {
-            user.getGenres().merge(genre, ADD_ONE, Integer::sum);
-        });
+        movies.stream()
+                .flatMap(movie -> movie.getGenres()
+                        .stream())
+                .filter(g -> !g.startsWith(EMPTY_GENRE))
+                .forEach(genre -> user.getGenres()
+                        .merge(genre, ADD_ONE, Integer::sum));
         userRepository.save(user);
     }
 
@@ -95,11 +99,9 @@ public class MovieService {
     }
 
     public List<Name> getActors(List<Cast> casts) {
-        List<Name> actors = new ArrayList<>();
-        for (Cast cast : casts) {
-            Name actor = nameRepository.findByNconst(cast.getNconst());
-            if (actor != null) actors.add(actor);
-        }
-        return actors;
+        return casts.stream()
+                .map(cast -> nameRepository.findByNconst(cast.getNconst()))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
     }
 }
