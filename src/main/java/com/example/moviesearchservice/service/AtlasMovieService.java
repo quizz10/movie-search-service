@@ -20,6 +20,10 @@ public class AtlasMovieService {
         return movieRepository.findByText(text);
     }
 
+    public List<AtlasMovie> findAllByText(String text) {
+        return movieRepository.findAllByText(text);
+    }
+
     public AtlasMovie findByTconst(String tconst) {
         return movieRepository.findByTconst(tconst);
     }

@@ -25,6 +25,11 @@ public class AtlasMovieController {
     }
 
     @QueryMapping
+    public List<AtlasMovie> findAllByText(@Argument String text) {
+        return movieService.findAllByText(text);
+    }
+
+    @QueryMapping
     public AtlasMovie findByTconst(@Argument String tconst) {
         return movieService.findByTconst(tconst);
     }

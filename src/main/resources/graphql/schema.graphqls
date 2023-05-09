@@ -5,6 +5,7 @@ type Query {
     findByOriginalTitleStartsWith(originalTitle: String): [AtlasMovie]
     findByTconst(tconst: String): AtlasMovie
     findByText(text: String): [AtlasMovie]
+    findAllByText(text: String): [AtlasMovie]
 }
 
 type Mutation {

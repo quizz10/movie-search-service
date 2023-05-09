@@ -22,5 +22,11 @@ public interface AtlasMovieRepository extends MongoRepository<AtlasMovie, Object
 
     })
     List<AtlasMovie> findByText(String text);
+    @Aggregation(pipeline = {
+            "{$search: {index: 'titleandgenres', text:{query:?0, path: {wildcard: '*'}}}}"
+         //   "{$sample: {size: 40}}"
+
+    })
+    List<AtlasMovie> findAllByText(String text);
 
 }
