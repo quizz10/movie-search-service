@@ -16,10 +16,10 @@ import java.util.List;
 @AllArgsConstructor
 public class Name {
     @Id
-    ObjectId _id;
-    String primaryName;
-    List<String> knownForTitles;
-    List<String> primaryProfession;
+    private ObjectId _id;
+    private String primaryName;
+    private List<String> knownForTitles;
+    private List<String> primaryProfession;
     @Indexed
-    String nconst;
+    private String nconst;
 }

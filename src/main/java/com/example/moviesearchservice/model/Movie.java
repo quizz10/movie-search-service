@@ -35,17 +35,6 @@ public class Movie {
     private Double averageRating;
     private String primaryTitle;
     private String titleType;
-    private List<Name> names;
-    private List<Cast> casts;
-
-    public List<Name> getNames() {
-        if (this.names == null) {
-            this.names = new ArrayList<>();
-        }
-        return names;
-    }
-
-    public void setNames(List<Name> names) {
-        this.names = names;
-    }
+    private List<Name> names = new ArrayList<>();
+    private List<Cast> casts = new ArrayList<>();
 }

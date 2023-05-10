@@ -13,9 +13,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @AllArgsConstructor
 public class Crew {
     @Id
-    ObjectId _id;
-    String directors;
-    String tconst;
-    String writers;
+    private ObjectId _id;
+    private String directors;
+    private String tconst;
+    private String writers;
 
 }

@@ -3,18 +3,19 @@ package com.example.moviesearchservice.service;
 import com.example.moviesearchservice.model.User;
 import com.example.moviesearchservice.repository.MovieRepository;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class GenreService {
-    MovieRepository movieRepository;
-    UserService userService;
-
+   private final UserService userService;
+// TODO: Plocka bara ut de 3 översta från genres
+    // Flytta in all logik som har med genre att göra och returnera det färdiga resultatet.
     public Iterator<Map.Entry<String, Integer>> sortGenresByHighestValue(long userId) {
-        User user = userService.findUserById(userId).get();
+        User user = userService.findUserById(userId);
         Set<Map.Entry<String, Integer>> set = sortByHighestValue(user.getGenres()).entrySet();
 
         Iterator<Map.Entry<String, Integer>> iterator = set.iterator();

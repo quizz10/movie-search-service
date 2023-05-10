@@ -8,8 +8,10 @@ spring:
     schema:
       printer:
         enabled: true
-  data:
-    mongodb:
-      database: moviedb
-      host: moviesearchcontainer
-      port: 27017
+      #data:
+      # mongodb:
+      #  database: moviedb
+      # host: moviesearchcontainer
+      #port: 27017
+
+# ${MONGO_CRED}

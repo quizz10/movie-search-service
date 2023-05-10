@@ -12,7 +12,7 @@ import java.util.Optional;
 public class UserService {
     UserRepository userRepository;
 
-    public Optional<User> findUserById(long userId) {
-        return Optional.ofNullable(userRepository.findUserByUserId(userId).orElseThrow(IllegalArgumentException::new));
+    public User findUserById(long userId) {
+        return userRepository.findUserByUserId(userId).orElseThrow(IllegalArgumentException::new);
     }
 }

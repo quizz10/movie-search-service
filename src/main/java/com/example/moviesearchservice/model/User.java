@@ -12,8 +12,8 @@ import java.util.Map;
 
 @Document(collection = "usercollection")
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
+//@NoArgsConstructor
+//@AllArgsConstructor
 public class User {
     @Transient
     public static final String SEQUENCE_NAME = "users_sequence";
@@ -21,19 +21,7 @@ public class User {
     @Id
     private long userId;
 
-    Map<String, Integer> genres;
-    Map<String, Integer> searchWords;
+    private Map<String, Integer> genres = new HashMap<>();
+    private Map<String, Integer> searchWords = new HashMap<>();
 
-
-    public Map<String, Integer> getGenres() {
-        if (genres == null)
-            genres = new HashMap<>();
-        return genres;
-    }
-
-    public Map<String, Integer> getSearchWords() {
-        if (searchWords == null)
-            searchWords = new HashMap<>();
-        return searchWords;
-    }
 }

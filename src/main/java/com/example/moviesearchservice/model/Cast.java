@@ -14,12 +14,12 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @AllArgsConstructor
 public class Cast {
     @Id
-    ObjectId _id;
+    private ObjectId _id;
     @Indexed
-    String tconst;
-    int ordering;
-    String nconst;
-    String category;
-    String job;
-    String characters;
+    private String tconst;
+    private int ordering;
+    private String nconst;
+    private String category;
+    private String job;
+    private String characters;
 }

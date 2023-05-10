@@ -29,12 +29,12 @@ public class MovieService {
 
     public User newUser() {
         User user = new User();
-        user.setUserId(sequenceGeneratorService.generateSequence(User.SEQUENCE_NAME));
+        user.setUserId(sequenceGeneratorService.generateUserId(User.SEQUENCE_NAME));
         return userRepository.save(user);
     }
 
     public List<Movie> findByOriginalTitleAndUserId(long userId, String originalTitle) {
-        User user = userService.findUserById(userId).get();
+        User user = userService.findUserById(userId);
 
         List<Movie> movies = movieRepository.findByOriginalTitleStartsWith(TITLE_REGEX + originalTitle);
         List<Movie> compiledMovies = compileMovies(movies);
@@ -42,7 +42,7 @@ public class MovieService {
 
         return compiledMovies;
     }
-
+//TODO: Se till att det är "optional" om man vill ha med skådespelare etc, t.ex med en bool.
     public List<Movie> compileMovies(List<Movie> movies) {
         for (Movie movie : movies) {
             movie.setCasts(getCast(movie.getTconst()));
