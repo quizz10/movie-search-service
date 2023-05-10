@@ -12,7 +12,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -44,10 +44,10 @@ public class MovieService {
     }
 //TODO: Se till att det är "optional" om man vill ha med skådespelare etc, t.ex med en bool.
     public List<Movie> compileMovies(List<Movie> movies) {
-        for (Movie movie : movies) {
-            movie.setCasts(getCast(movie.getTconst()));
-            movie.getNames().addAll(getActors(movie.getCasts()));
-        }
+        movies.forEach(movie -> {
+            movie.setCasts(findCast(movie.getTconst()));
+            movie.getNames().addAll(findActors(movie.getCasts()));
+        });
         return movies;
     }
 
@@ -57,49 +57,35 @@ public class MovieService {
         return compileMovies(movies);
     }
 
-
-
-    public List<Movie> findRecommendedTitlesByGenresAndUserId(long userId) {
-        Iterator<Entry<String, Integer>> i = genreService.sortGenresByHighestValue(userId);
+    public List<Movie> findRecommendedTitlesByTopGenresAndUserId(long userId) {
+        List<Map.Entry<String, Integer>> genreList = genreService.findTopThreeGenres(userId);
         List<Movie> movies = new ArrayList<>();
         int amountOfRecommendations = 3;
-        int currentValue = -1;
-        while (i.hasNext() && amountOfRecommendations > 0) {
-            Entry<String, Integer> mp = i.next();
-            if (mp.getValue() != currentValue) {
-                if (currentValue != -1) {
-                    amountOfRecommendations--;
-                }
-                currentValue = mp.getValue();
-            }
-
-            movies.addAll(movieRepository.findTitlesByGenre((mp.getKey()), amountOfRecommendations));
-
+        for (Map.Entry<String, Integer> genre : genreList) {
+            movies.addAll(movieRepository.findTitlesByGenre(genre.getKey(), amountOfRecommendations--));
         }
-
         return compileMovies(movies);
     }
 
     private void storeGenreData(User user, List<Movie> movies) {
         final String EMPTY_GENRE = "\\N";
         final int ADD_ONE = 1;
-        movies.stream().flatMap(movie -> movie.getGenres().stream()).filter(g -> !g.startsWith(EMPTY_GENRE)).forEach(genre -> {
-            user.getGenres().merge(genre, ADD_ONE, Integer::sum);
-        });
+        movies.stream().flatMap(movie -> movie.getGenres().stream())
+                .filter(g -> !g.startsWith(EMPTY_GENRE))
+                .forEach(genre -> user.getGenres()
+                        .merge(genre, ADD_ONE, Integer::sum));
         userRepository.save(user);
     }
 
 
-    public List<Cast> getCast(String tconst) {
+    public List<Cast> findCast(String tconst) {
         return castRepository.findByTconst(tconst);
     }
 
-    public List<Name> getActors(List<Cast> casts) {
-        List<Name> actors = new ArrayList<>();
-        for (Cast cast : casts) {
-            Name actor = nameRepository.findByNconst(cast.getNconst());
-            if (actor != null) actors.add(actor);
-        }
-        return actors;
+    public List<Name> findActors(List<Cast> casts) {
+        return casts.stream()
+                .map(cast -> nameRepository.findByNconst(cast.getNconst()))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
     }
 }
