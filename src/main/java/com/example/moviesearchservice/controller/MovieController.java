@@ -3,6 +3,7 @@ package com.example.moviesearchservice.controller;
 import com.example.moviesearchservice.model.Movie;
 import com.example.moviesearchservice.model.User;
 import com.example.moviesearchservice.service.MovieService;
+import com.example.moviesearchservice.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
@@ -16,6 +17,7 @@ import java.util.List;
 public class MovieController {
 
     private final MovieService movieService;
+    private final UserService userService;
 
     @QueryMapping
     public List<Movie> findRecommendedTitlesByGenresAndUserId(@Argument long userId) {
@@ -24,14 +26,13 @@ public class MovieController {
 
     @MutationMapping
     public User newUser() {
-        return movieService.newUser();
+        return userService.newUser();
     }
 
     @QueryMapping
     public List<Movie> findByOriginalTitleAndUserId(@Argument long userId, @Argument String originalTitle) {
         return movieService.findByOriginalTitleAndUserId(userId, originalTitle);
     }
-
 
     @QueryMapping
     public List<Movie> findByTitle(@Argument String title) {

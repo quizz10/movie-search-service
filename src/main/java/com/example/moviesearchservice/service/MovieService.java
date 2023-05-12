@@ -23,15 +23,7 @@ public class MovieService {
     private final UserRepository userRepository;
     private final GenreService genreService;
     private final UserService userService;
-    private final SequenceGeneratorService sequenceGeneratorService;
     private final char TITLE_REGEX = '^';
-
-
-    public User newUser() {
-        User user = new User();
-        user.setUserId(sequenceGeneratorService.generateUserId(User.SEQUENCE_NAME));
-        return userRepository.save(user);
-    }
 
     public List<Movie> findByOriginalTitleAndUserId(long userId, String originalTitle) {
         User user = userService.findUserById(userId);
@@ -43,14 +35,6 @@ public class MovieService {
         return compiledMovies;
     }
 //TODO: Se till att det är "optional" om man vill ha med skådespelare etc, t.ex med en bool.
-    public List<Movie> compileMovies(List<Movie> movies) {
-        movies.forEach(movie -> {
-            movie.setCasts(findCast(movie.getTconst()));
-            movie.getNames().addAll(findActors(movie.getCasts()));
-        });
-        return movies;
-    }
-
     public List<Movie> findByTitle(String title) {
         List<Movie> movies = movieRepository.findByOriginalTitleStartsWith(TITLE_REGEX + title);
 
@@ -77,12 +61,20 @@ public class MovieService {
         userRepository.save(user);
     }
 
+    private List<Movie> compileMovies(List<Movie> movies) {
+        movies.forEach(movie -> {
+            movie.setCasts(findCast(movie.getTconst()));
+            movie.getNames().addAll(findActors(movie.getCasts()));
+        });
+        return movies;
+    }
 
-    public List<Cast> findCast(String tconst) {
+
+    private List<Cast> findCast(String tconst) {
         return castRepository.findByTconst(tconst);
     }
 
-    public List<Name> findActors(List<Cast> casts) {
+    private List<Name> findActors(List<Cast> casts) {
         return casts.stream()
                 .map(cast -> nameRepository.findByNconst(cast.getNconst()))
                 .filter(Objects::nonNull)

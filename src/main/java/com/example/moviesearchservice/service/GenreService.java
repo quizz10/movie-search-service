@@ -17,7 +17,6 @@ public class GenreService {
 
     public List<Map.Entry<String, Integer>> findTopThreeGenres(long userId) {
         User user = userService.findUserById(userId);
-
         return sortByHighestValue(user.getGenres());
     }
 

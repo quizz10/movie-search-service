@@ -12,7 +12,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @AllArgsConstructor
 public class DatabaseSequence {
     @Id
-    String id;
+    private String id;
 
     private Long seq;
 }
