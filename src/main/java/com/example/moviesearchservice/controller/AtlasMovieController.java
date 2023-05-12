@@ -20,6 +20,11 @@ public class AtlasMovieController {
     }
 
     @QueryMapping
+    public List<AtlasMovie> findByOriginalTitleOrGenre(@Argument String titleOrGenre) {
+        return movieService.findByOriginalTitleOrGenre(titleOrGenre);
+    }
+
+    @QueryMapping
     public List<AtlasMovie> findByText(@Argument String text) {
         return movieService.findByText(text);
     }

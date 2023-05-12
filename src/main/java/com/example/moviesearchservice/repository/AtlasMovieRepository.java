@@ -1,6 +1,7 @@
 package com.example.moviesearchservice.repository;
 
 import com.example.moviesearchservice.model.AtlasMovie;
+import com.example.moviesearchservice.model.Movie;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.Aggregation;
 import org.springframework.data.mongodb.repository.MongoRepository;
@@ -29,4 +30,12 @@ public interface AtlasMovieRepository extends MongoRepository<AtlasMovie, Object
     })
     List<AtlasMovie> findAllByText(String text);
 
+    @Aggregation(pipeline = {
+            "{'$search': {index: 'titlesandgenres', 'text':" +
+                    "{'query': ?0," +
+                    " 'path':['originalTitle', 'genres']}" +
+                    "}}"
+
+    })
+    List<AtlasMovie> findByOriginalTitleOrGenre(String titleOrGenre);
 }

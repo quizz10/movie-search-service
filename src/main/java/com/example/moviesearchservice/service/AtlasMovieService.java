@@ -24,6 +24,11 @@ public class AtlasMovieService {
         return movieRepository.findAllByText(text);
     }
 
+    public List<AtlasMovie> findByOriginalTitleOrGenre(String titleOrGenre) {
+        System.out.println(titleOrGenre);
+        return movieRepository.findByOriginalTitleOrGenre(titleOrGenre);
+    }
+
     public AtlasMovie findByTconst(String tconst) {
         return movieRepository.findByTconst(tconst);
     }
