@@ -1,6 +1,9 @@
 package com.example.moviesearchservice.service;
 
+import com.example.moviesearchservice.model.AtlasActor;
+import com.example.moviesearchservice.model.AtlasCompiled;
 import com.example.moviesearchservice.model.AtlasMovie;
+import com.example.moviesearchservice.repository.AtlasActorRepository;
 import com.example.moviesearchservice.repository.AtlasMovieRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -11,25 +14,16 @@ import java.util.List;
 @AllArgsConstructor
 public class AtlasMovieService {
     private AtlasMovieRepository movieRepository;
+    private AtlasActorRepository actorRepository;
 
-    public List<AtlasMovie> findByOriginalTitle(String originalTitle) {
-        return movieRepository.findByOriginalTitleStartsWith(originalTitle);
-    }
+    public AtlasCompiled findByOriginalTitleOrActor(String titleOrActor) {
+        AtlasCompiled atlasCompiled = new AtlasCompiled();
+        List<AtlasMovie> movies = movieRepository.findByOriginalTitle(titleOrActor);
+        List<AtlasActor> actors = actorRepository.findByActor(titleOrActor);
 
-    public List<AtlasMovie> findByText(String text) {
-        return movieRepository.findByText(text);
-    }
+        atlasCompiled.getMovies().addAll(movies);
+        atlasCompiled.getActors().addAll(actors);
 
-    public List<AtlasMovie> findAllByText(String text) {
-        return movieRepository.findAllByText(text);
-    }
-
-    public List<AtlasMovie> findByOriginalTitleOrGenre(String titleOrGenre) {
-        System.out.println(titleOrGenre);
-        return movieRepository.findByOriginalTitleOrGenre(titleOrGenre);
-    }
-
-    public AtlasMovie findByTconst(String tconst) {
-        return movieRepository.findByTconst(tconst);
+        return atlasCompiled;
     }
 }

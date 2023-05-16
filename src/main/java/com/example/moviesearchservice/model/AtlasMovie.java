@@ -27,4 +27,5 @@ public class AtlasMovie {
     @Indexed
     private Double averageRating;
 
+
 }

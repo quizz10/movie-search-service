@@ -1,18 +1,23 @@
 type Query {
-    findByTitle(title: String): [Movie]
-    findByOriginalTitleAndUserId(userId: Int, originalTitle: String): [Movie]
-    findRecommendedTitlesByGenresAndUserId(userId: Int): [Movie]
-    findByOriginalTitleStartsWith(originalTitle: String): [AtlasMovie]
-    findByTconst(tconst: String): AtlasMovie
-    findByText(text: String): [AtlasMovie]
-    findAllByText(text: String): [AtlasMovie]
-    findByOriginalTitleOrGenre(titleOrGenre: String): [AtlasMovie]
+    findByOriginalTitleOrActor(titleOrActor: String): AtlasCompiled
 }
-
 type Mutation {
     newUser: User
 }
 
+type AtlasCompiled {
+    movies: [AtlasMovie]
+    actors: [AtlasActor]
+}
+
+type AtlasActor {
+    _id: ID!
+    birthYear: String
+    deathYear: String
+    knownForTitles: String
+    primaryName: String
+    primaryProfession: String
+}
 
 type AtlasMovie {
     _id: ID!
@@ -21,35 +26,6 @@ type AtlasMovie {
     tconst: String
     genres: [String]
     averageRating: Float
-}
-
-type Movie {
-    _id: ID!
-    primaryTitle: String
-    tconst: String
-    startYear: String
-    endYear: String
-    genres: [String]
-    originalTitle: String
-    averageRating: Float
-    casts: [Cast]
-    names: [Name]
-}
-
-type Cast {
-    _id: ID!
-    tconst: String
-    ordering: Int
-    nconst: String
-    category: String
-    job: String
-    characters: String
-}
-
-type Name {
-    _id: ID!
-    primaryName: String
-    primaryProfession:[String]
 }
 
 type User {
